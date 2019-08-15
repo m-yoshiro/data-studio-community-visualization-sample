@@ -1,5 +1,5 @@
 {
-  "name": "community-visuallization-sample",
+  "name": "community-visualization-sample",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,5 +8,12 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@google/dscc-scripts": "^1.0.9",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@google/dscc": "^0.3.12"
+  }
 }

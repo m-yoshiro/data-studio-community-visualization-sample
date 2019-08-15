@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "rm -rf ./dist/*",
     "dev": "npm run clean && webpack -w",
+    "build": "npm run clean && webpack --mode=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

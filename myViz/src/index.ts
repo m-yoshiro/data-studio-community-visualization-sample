@@ -1,4 +1,6 @@
 import * as dscc from '@google/dscc';
+import "./style.css";
+
 let titleElement = document.createElement('div');
 titleElement.id = 'myVixTitle';
 document.body.appendChild(titleElement);

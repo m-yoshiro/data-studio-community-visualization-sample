@@ -1,18 +1,36 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const pkgName = 'myViz';
 
 module.exports = {
   mode: 'development',
   entry: './src/index.ts',
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'myViz.js',
+    path: path.resolve(__dirname, '.tmp'),
+    filename: `${pkgName}.js`,
   },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: `${pkgName}.css`,
+    })
+  ],
   module: {
     rules: [
       {
         test: /\.ts$/,
         use: 'ts-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: { hmr: process.env.NODE_ENV === 'development' },
+          },
+          'css-loader',
+        ],
       },
     ],
   },

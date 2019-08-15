@@ -1,4 +1,3 @@
-const env = process.env.NODE_ENV;
 const path = require('path');
 
 module.exports = {
@@ -6,7 +5,7 @@ module.exports = {
   entry: './src/index.ts',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.ts',
+    filename: 'index.js',
   },
   module: {
     rules: [

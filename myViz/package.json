@@ -1,8 +1,7 @@
 {
-  "name": "community-visualization-sample",
+  "name": "myViz",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "clean": "rm -rf ./dist/*",
     "dev": "npm run clean && webpack -w",

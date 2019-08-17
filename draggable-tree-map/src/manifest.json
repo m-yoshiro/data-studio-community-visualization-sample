@@ -1,0 +1,25 @@
+{
+  "name": "My Visualizations",
+  "organization": "MyOrg",
+  "description": "My first visualization package.",
+  "logoUrl": "https://logo",
+  "organizationUrl": "https://url",
+  "supportUrl": "https://url",
+  "privacyPolicyUrl": "https://url",
+  "termsOfServiceUrl": "https://url",
+  "packageUrl": "https://url",
+  "supportUrl": "https://url",
+  "devMode": true,
+  "components": [
+    {
+      "name": "Draggable tree map",
+      "description": "Draggable tree map made with D3.js and reference to this sample:http://bl.ocks.org/mbostock/1153292",
+      "iconUrl": "https://url",
+      "resource": {
+        "js": "gs://my_cloud_data_viz/draggable-tree-map/draggable-tree-map.js",
+        "config": "gs://my_cloud_data_viz/draggable-tree-map/draggable-tree-map.json",
+        "css": "gs://my_cloud_data_viz/draggable-tree-map/draggable-tree-map.css"
+      }
+    }
+  ]
+}

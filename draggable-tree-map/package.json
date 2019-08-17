@@ -15,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "@google/dscc-scripts": "^1.0.9",
+    "@types/d3": "^5.7.2",
     "css-loader": "^3.2.0",
     "d3": "^5.9.7",
     "mini-css-extract-plugin": "^0.8.0",

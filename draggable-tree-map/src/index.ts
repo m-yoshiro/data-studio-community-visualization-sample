@@ -1,19 +1,31 @@
 import * as dscc from '@google/dscc';
-import TreeMap from './treeMap';
+import TreeMap, { ILink } from './treeMap';
 import "./style.css";
 
 function drawViz(data: dscc.TableFormat): void {
-  let rowData = data.tables[dscc.TableType.DEFAULT];
-  console.log(rowData);
+  let { rows, headers } = data.tables[dscc.TableType.DEFAULT];
 
   const height = dscc.getHeight();
   const width = dscc.getWidth();
 
-  const treemap = new TreeMap({
-    initSelector: 'body',
-    width: width,
-    height: height
+  const rowIndex = (name: string) => headers.findIndex(i => i.name === name);
+
+  const dataset = rows.map( row => {
+    return {
+      source: row[rowIndex('source')],
+      target: row[rowIndex('target')],
+      type: row[rowIndex('type')],
+    }
   });
+
+  const treemap = new TreeMap(
+    dataset as ILink[],
+    {
+      initSelector: 'body',
+      width: width,
+      height: height
+    });
+
   treemap.run();
 }
 

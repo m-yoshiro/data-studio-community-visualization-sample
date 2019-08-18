@@ -4,11 +4,11 @@ interface IBaseNodeDatum {
   id: string;
 };
 
-interface INode extends d3.SimulationNodeDatum {
+export interface INode extends d3.SimulationNodeDatum {
   id: string;
 };
 
-interface ILink extends d3.SimulationLinkDatum<INode> {
+export interface ILink extends d3.SimulationLinkDatum<INode> {
   type?: string
 };
 
@@ -55,23 +55,25 @@ interface IConfig {
 }
 
 class TreeMap {
-  private config:IConfig;
+  private config: IConfig;
+  private dataset: ILink[];
 
-  constructor (config: IConfig ) {
+  constructor (dataset: ILink[], config: IConfig) {
     this.config = {
       initSelector: config.initSelector || 'body',
       width: config.width || width,
       height: config.height || height,
     };
+    this.dataset = dataset;
   }
 
   public run(): this {
-    const nodes = this.nodes();
+    const nodes = this.nodes(this.dataset);
     this.tree(nodes as INode[]);
     return this;
   }
 
-  private nodes() {
+  private nodes(dataset: ILink[]) {
     return dataset.reduce((allData, data) => {
       if (allData.indexOf(data.source) === -1) {
         allData.push(data.source);

@@ -15,38 +15,36 @@ export interface ILink extends d3.SimulationLinkDatum<INode> {
 const width = 960;
 const height = 500;
 
-const dataset: ILink[] = [
-  {source: "Microsoft", target: "Amazon", type: "licensing"},
-  {source: "Microsoft", target: "HTC", type: "licensing"},
-  {source: "Samsung", target: "Apple", type: "suit"},
-  {source: "Motorola", target: "Apple", type: "suit"},
-  {source: "Nokia", target: "Apple", type: "resolved"},
-  {source: "HTC", target: "Apple", type: "suit"},
-  {source: "Kodak", target: "Apple", type: "suit"},
-  {source: "Microsoft", target: "Barnes & Noble", type: "suit"},
-  {source: "Microsoft", target: "Foxconn", type: "suit"},
-  {source: "Oracle", target: "Google", type: "suit"},
-  {source: "Apple", target: "HTC", type: "suit"},
-  {source: "Microsoft", target: "Inventec", type: "suit"},
-  {source: "Samsung", target: "Kodak", type: "resolved"},
-  {source: "LG", target: "Kodak", type: "resolved"},
-  {source: "RIM", target: "Kodak", type: "suit"},
-  {source: "Sony", target: "LG", type: "suit"},
-  {source: "Kodak", target: "LG", type: "resolved"},
-  {source: "Apple", target: "Nokia", type: "resolved"},
-  {source: "Qualcomm", target: "Nokia", type: "resolved"},
-  {source: "Apple", target: "Motorola", type: "suit"},
-  {source: "Microsoft", target: "Motorola", type: "suit"},
-  {source: "Motorola", target: "Microsoft", type: "suit"},
-  {source: "Huawei", target: "ZTE", type: "suit"},
-  {source: "Ericsson", target: "ZTE", type: "suit"},
-  {source: "Kodak", target: "Samsung", type: "resolved"},
-  {source: "Apple", target: "Samsung", type: "suit"},
-  {source: "Kodak", target: "RIM", type: "suit"},
-  {source: "Nokia", target: "Qualcomm", type: "suit"}
-];
-
-const links = dataset;
+// const dataset: ILink[] = [
+//   {source: "Microsoft", target: "Amazon", type: "licensing"},
+//   {source: "Microsoft", target: "HTC", type: "licensing"},
+//   {source: "Samsung", target: "Apple", type: "suit"},
+//   {source: "Motorola", target: "Apple", type: "suit"},
+//   {source: "Nokia", target: "Apple", type: "resolved"},
+//   {source: "HTC", target: "Apple", type: "suit"},
+//   {source: "Kodak", target: "Apple", type: "suit"},
+//   {source: "Microsoft", target: "Barnes & Noble", type: "suit"},
+//   {source: "Microsoft", target: "Foxconn", type: "suit"},
+//   {source: "Oracle", target: "Google", type: "suit"},
+//   {source: "Apple", target: "HTC", type: "suit"},
+//   {source: "Microsoft", target: "Inventec", type: "suit"},
+//   {source: "Samsung", target: "Kodak", type: "resolved"},
+//   {source: "LG", target: "Kodak", type: "resolved"},
+//   {source: "RIM", target: "Kodak", type: "suit"},
+//   {source: "Sony", target: "LG", type: "suit"},
+//   {source: "Kodak", target: "LG", type: "resolved"},
+//   {source: "Apple", target: "Nokia", type: "resolved"},
+//   {source: "Qualcomm", target: "Nokia", type: "resolved"},
+//   {source: "Apple", target: "Motorola", type: "suit"},
+//   {source: "Microsoft", target: "Motorola", type: "suit"},
+//   {source: "Motorola", target: "Microsoft", type: "suit"},
+//   {source: "Huawei", target: "ZTE", type: "suit"},
+//   {source: "Ericsson", target: "ZTE", type: "suit"},
+//   {source: "Kodak", target: "Samsung", type: "resolved"},
+//   {source: "Apple", target: "Samsung", type: "suit"},
+//   {source: "Kodak", target: "RIM", type: "suit"},
+//   {source: "Nokia", target: "Qualcomm", type: "suit"}
+// ];
 
 interface IConfig {
   initSelector: string;
@@ -104,7 +102,7 @@ class TreeMap {
         .attr('d', 'M0,-5L10,0L0,5');
 
     const path = svg.append('g').selectAll('path')
-        .data(links)
+        .data(this.dataset)
       .enter().append('path')
         .attr('class', d => `link ${d.type}`)
         .attr('marker-end', d => `url(#${d.type})`);
@@ -127,7 +125,7 @@ class TreeMap {
         .text(d => d.id);
 
     const simulation = d3.forceSimulation(nodes as INode[])
-      .force('link', (d3.forceLink(links) as d3.ForceLink<INode, ILink>).id((d) => d.id))
+      .force('link', (d3.forceLink(this.dataset) as d3.ForceLink<INode, ILink>).id((d) => d.id))
       .force('charge', d3.forceManyBody())
       .force('center', d3.forceCenter(width / 4, height / 2));
 

@@ -1,5 +1,9 @@
 import * as d3 from 'd3';
 
+interface IBaseNodeDatum {
+  id: string;
+};
+
 interface INode extends d3.SimulationNodeDatum {
   id: string;
 };
@@ -7,6 +11,9 @@ interface INode extends d3.SimulationNodeDatum {
 interface ILink extends d3.SimulationLinkDatum<INode> {
   type?: string
 };
+
+const width = 960;
+const height = 500;
 
 const dataset: ILink[] = [
   {source: "Microsoft", target: "Amazon", type: "licensing"},
@@ -41,98 +48,116 @@ const dataset: ILink[] = [
 
 const links = dataset;
 
-const nodes = dataset.reduce((allData, data) => {
-  if (allData.indexOf(data.source) === -1) {
-    allData.push(data.source);
+class TreeMap {
+  config: { [K: string]: string };
+
+  constructor (config?: { [K: string]: string }) {
+    this.config = {
+      initSelector: 'body',
+    };
   }
-  if (allData.indexOf(data.target) === -1) {
-    allData.push(data.target);
+
+  public run(): this {
+    const nodes = this.nodes();
+    this.tree(nodes as INode[]);
+    return this;
   }
-  return allData;
-}, [] as (string | number | INode)[]).map(data => { return { id: data } });
 
-const width = 960;
-const height = 500;
+  private nodes() {
+    return dataset.reduce((allData, data) => {
+      if (allData.indexOf(data.source) === -1) {
+        allData.push(data.source);
+      }
+      if (allData.indexOf(data.target) === -1) {
+        allData.push(data.target);
+      }
+      return allData;
+    }, [] as (string | number | INode)[]).map(data => { return { id: data } });
+  }
 
-const svg = d3.select('body').append('svg')
-  .attr('width', width)
-  .attr('height', height);
+  private tree(nodes: INode[]) {
+    const svg = d3.select(this.config.initSelector).append('svg')
+      .attr('width', width)
+      .attr('height', height);
 
-svg.append('defs').selectAll('marker')
-    .data(['suit', 'licensing', 'resolved'])
-  .enter().append('marker')
-    .attr('id', d => d)
-    .attr('viewBox', '0 -5 10 10')
-    .attr('refX', 15)
-    .attr('refY', -1.5)
-    .attr('markerWidth', 6)
-    .attr('markerHeight', 6)
-    .attr('orient', 'auto')
-  .append('path')
-    .attr('d', 'M0,-5L10,0L0,5');
+    svg.append('defs').selectAll('marker')
+        .data(['suit', 'licensing', 'resolved'])
+      .enter().append('marker')
+        .attr('id', d => d)
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 15)
+        .attr('refY', -1.5)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+      .append('path')
+        .attr('d', 'M0,-5L10,0L0,5');
 
+    const path = svg.append('g').selectAll('path')
+        .data(links)
+      .enter().append('path')
+        .attr('class', d => `link ${d.type}`)
+        .attr('marker-end', d => `url(#${d.type})`);
 
-const path = svg.append('g').selectAll('path')
-    .data(links)
-  .enter().append('path')
-    .attr('class', d => `link ${d.type}`)
-    .attr('marker-end', d => `url(#${d.type})`);
+    const circle = svg.append('g').selectAll('circle')
+        .data(nodes as INode[])
+      .enter().append('circle')
+        .attr('r', 6)
+      .call(d3.drag<SVGCircleElement, INode>()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended)
+      );
 
-const circle = svg.append('g').selectAll('circle')
-    .data(nodes as INode[])
-  .enter().append('circle')
-    .attr('r', 6)
-  .call(d3.drag<SVGCircleElement, INode>()
-    .on('start', dragstarted)
-    .on('drag', dragged)
-    .on('end', dragended)
-  );
+    const text = svg.append('g').selectAll('text')
+        .data(nodes as INode[])
+      .enter().append('text')
+        .attr('x', 8)
+        .attr('y', '.31em')
+        .text(d => d.id);
 
-const text = svg.append('g').selectAll('text')
-    .data(nodes as INode[])
-  .enter().append('text')
-    .attr('x', 8)
-    .attr('y', '.31em')
-    .text(d => d.id);
+    const simulation = d3.forceSimulation(nodes as INode[])
+      .force('link', (d3.forceLink(links) as d3.ForceLink<INode, ILink>).id((d) => d.id))
+      .force('charge', d3.forceManyBody())
+      .force('center', d3.forceCenter(width / 4, height / 2));
 
-const simulation = d3.forceSimulation(nodes as INode[])
-  .force('link', (d3.forceLink(links) as d3.ForceLink<INode, ILink>).id((d) => d.id))
-  .force('charge', d3.forceManyBody())
-  .force('center', d3.forceCenter(width / 4, height / 2));
+    simulation.nodes(nodes as INode[])
+      .on('tick', tick);
 
-simulation.nodes(nodes as INode[])
-  .on('tick', tick);
+    function tick() {
+      path.attr('d', linkArc);
+      circle.attr('transform', transform);
+      text.attr('transform', transform);
+    }
 
-function tick() {
-  path.attr('d', linkArc);
-  circle.attr('transform', transform);
-  text.attr('transform', transform);
+    function linkArc<ValueFn extends any>(d: ValueFn): string {
+      const dx = d.target.x - d.source.x;
+      const dy = d.target.y - d.source.y;
+      const dr = Math.sqrt(dx * dx + dy * dy);
+      return `M${ d.source.x },${ d.source.y }A${ dr },${ dr } 0 0,1 ${d.target.x},${d.target.y}`;
+    }
+
+    function transform<ValueFn extends any>(d: ValueFn): string {
+      return `translate(${d.x},${d.y})`;
+    }
+
+    function dragstarted<ValueFn extends any>(d: ValueFn): void {
+      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged<ValueFn extends any>(d: ValueFn): void {
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+    }
+
+    function dragended<ValueFn extends any>(d: ValueFn): void {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+  }
 }
 
-function linkArc<ValueFn extends any>(d: ValueFn): string {
-  const dx = d.target.x - d.source.x;
-  const dy = d.target.y - d.source.y;
-  const dr = Math.sqrt(dx * dx + dy * dy);
-  return `M${ d.source.x },${ d.source.y }A${ dr },${ dr } 0 0,1 ${d.target.x},${d.target.y}`;
-}
-
-function transform<ValueFn extends any>(d: ValueFn): string {
-  return `translate(${d.x},${d.y})`;
-}
-
-function dragstarted<ValueFn extends any>(d: ValueFn): void {
-  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-  d.fx = d.x;
-  d.fy = d.y;
-}
-
-function dragged<ValueFn extends any>(d: ValueFn): void {
-  d.fx = d3.event.x;
-  d.fy = d3.event.y;
-}
-
-function dragended<ValueFn extends any>(d: ValueFn): void {
-  if (!d3.event.active) simulation.alphaTarget(0);
-  d.fx = null;
-  d.fy = null;
-}
+export default TreeMap;

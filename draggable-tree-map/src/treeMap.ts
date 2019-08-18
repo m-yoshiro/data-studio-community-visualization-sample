@@ -65,9 +65,13 @@ class TreeMap {
     this.dataset = dataset;
   }
 
+  static existed: boolean = false;
+
   public run(): this {
     const nodes = this.nodes(this.dataset);
     this.tree(nodes as INode[]);
+    TreeMap.existed = true;
+
     return this;
   }
 
@@ -86,7 +90,8 @@ class TreeMap {
   private tree(nodes: INode[]) {
     const svg = d3.select(this.config.initSelector).append('svg')
       .attr('width', width)
-      .attr('height', height);
+      .attr('height', height)
+      .attr('viewBox', `0 0 ${width} ${height}`);
 
     svg.append('defs').selectAll('marker')
         .data(['suit', 'licensing', 'resolved'])

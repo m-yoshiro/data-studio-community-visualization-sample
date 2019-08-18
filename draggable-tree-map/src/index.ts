@@ -26,7 +26,9 @@ function drawViz(data: dscc.TableFormat): void {
       height: height
     });
 
-  treemap.run();
+  if (!TreeMap.existed) {
+    treemap.run();
+  }
 }
 
 dscc.subscribeToData(drawViz, { transform: dscc.tableTransform });

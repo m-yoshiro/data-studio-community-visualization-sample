@@ -86,7 +86,7 @@ const circle = svg.append('g').selectAll('circle')
     .on('start', dragstarted)
     .on('drag', dragged)
     .on('end', dragended)
-  )
+  );
 
 const text = svg.append('g').selectAll('text')
     .data(nodes as INode[])
@@ -116,22 +116,22 @@ function linkArc<ValueFn extends any>(d: ValueFn): string {
   return `M${ d.source.x },${ d.source.y }A${ dr },${ dr } 0 0,1 ${d.target.x},${d.target.y}`;
 }
 
-function transform<ValueFn extends any>(d: ValueFn) {
+function transform<ValueFn extends any>(d: ValueFn): string {
   return `translate(${d.x},${d.y})`;
 }
 
-function dragstarted<ValueFn extends any>(d: ValueFn) {
+function dragstarted<ValueFn extends any>(d: ValueFn): void {
   if (!d3.event.active) simulation.alphaTarget(0.3).restart();
   d.fx = d.x;
   d.fy = d.y;
 }
 
-function dragged<ValueFn extends any>(d: ValueFn) {
+function dragged<ValueFn extends any>(d: ValueFn): void {
   d.fx = d3.event.x;
   d.fy = d3.event.y;
 }
 
-function dragended<ValueFn extends any>(d: ValueFn) {
+function dragended<ValueFn extends any>(d: ValueFn): void {
   if (!d3.event.active) simulation.alphaTarget(0);
   d.fx = null;
   d.fy = null;

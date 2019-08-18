@@ -5,7 +5,7 @@
   "scripts": {
     "clean": "rm -rf ./.tmp ./dist",
     "mkdir-build": "mkdir ./.tmp ./dist",
-    "copy": "cp src/manifest.json dist/manifest.json && cp src/myViz.json dist/myViz.json && cp .tmp/*.{js,css} dist/",
+    "copy": "cp src/manifest.json dist/manifest.json && cp src/draggable-tree-map.json dist/draggable-tree-map.json && cp .tmp/*.{js,css} dist/",
     "dev": "npm run clean && webpack -w",
     "build": "npm run clean && npm run mkdir-build && webpack --mode=production && npm run copy",
     "test": "echo \"Error: no test specified\" && exit 1"

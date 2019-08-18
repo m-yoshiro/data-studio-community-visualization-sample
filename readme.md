@@ -11,3 +11,11 @@ Google Data Studio Community Visualization の学習を目的としたサンプ�
     $ npm install
     $ npm run build
     ```
+
+* [draggable-tree-map/](./draggable-tree-map): D3.jsを利用したTree mapのVisualizationです。
+
+    ```sh
+    $ cd draggable-tree-map
+    $ npm install
+    $ npm run build
+    ```

@@ -4,11 +4,13 @@ import "./style.css";
 
 function drawViz(data: dscc.TableFormat): void {
   let rowData = data.tables[dscc.TableType.DEFAULT];
+  console.log(rowData);
 
   const height = dscc.getHeight();
   const width = dscc.getWidth();
 
   const treemap = new TreeMap({
+    initSelector: 'body',
     width: width,
     height: height
   });

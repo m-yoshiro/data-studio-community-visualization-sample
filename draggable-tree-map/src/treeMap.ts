@@ -49,24 +49,19 @@ const dataset: ILink[] = [
 const links = dataset;
 
 interface IConfig {
-  initSelector?: string;
-  width?: number;
-  height?: number;
+  initSelector: string;
+  width: number;
+  height: number;
 }
 
 class TreeMap {
   private config:IConfig;
 
-  constructor (config?: IConfig ) {
-    this.init();
-    this.config = {};
-  }
-
-  private init() {
+  constructor (config: IConfig ) {
     this.config = {
-      initSelector: 'body',
-      width: this.config.width || width,
-      height: this.config.height || height,
+      initSelector: config.initSelector || 'body',
+      width: config.width || width,
+      height: config.height || height,
     };
   }
 

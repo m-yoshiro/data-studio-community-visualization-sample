@@ -6,18 +6,24 @@ titleElement.id = 'myVixTitle';
 document.body.appendChild(titleElement);
 
 function drawViz(data: dscc.ObjectFormat): void {
+  // Data Studioのデータ
   let rowData = data.tables.DEFAULT;
 
   const margin = { top: 10, bottom: 50, right: 10, left: 10};
   const padding = { top: 15, bottom: 15 };
+
+  // Data Studioでの表示サイズをもとにグラフのサイズを決定
   const height = dscc.getHeight() - margin.top - margin.bottom;
   const width = dscc.getWidth() - margin.left - margin.right;
 
+  // body内にsvgが既にある場合、古いsvgとして削除する
+  // Data Studioでデータソースの更新が起こるたびにsvgが追加されることを防ぐ
   if (document.querySelector('svg')) {
     let oldSvg = document.querySelector('svg') as SVGElement
     oldSvg.parentNode && oldSvg.parentNode.removeChild(oldSvg);
   }
 
+  // グラフを描画するsvgを作成
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('height', `${height}px`);
   svg.setAttribute('width', `${width}px`);
@@ -35,6 +41,7 @@ function drawViz(data: dscc.ObjectFormat): void {
     largestMetric = Math.max(largestMetric, row['barMetric'][0]);
   });
 
+  // loop処理により、グラフのバーを複数作成する
   rowData.forEach(function(row: any, i) {
     const barData = {
       dim: row['barDimension'][0],
@@ -66,6 +73,9 @@ function drawViz(data: dscc.ObjectFormat): void {
 
     svg.appendChild(text);
   });
+
+  // Data Studioのグラフはbodyタグを持つ。
+  // 最後にsvgをbodyに挿入することで、Data Studioでグラフを描画出来る。
   document.body.appendChild(svg);
 
   let metricName = data.fields['barMetric'][0].name;

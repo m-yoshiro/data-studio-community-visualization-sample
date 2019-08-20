@@ -1,9 +1,5 @@
 import * as d3 from 'd3';
 
-interface IBaseNodeDatum {
-  id: string;
-};
-
 export interface INode extends d3.SimulationNodeDatum {
   id: string;
 };

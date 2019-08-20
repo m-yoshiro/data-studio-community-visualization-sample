@@ -11,6 +11,7 @@ export interface ILink extends d3.SimulationLinkDatum<INode> {
 const width = 960;
 const height = 500;
 
+// Sample Dataset
 // const dataset: ILink[] = [
 //   {source: "Microsoft", target: "Amazon", type: "licensing"},
 //   {source: "Microsoft", target: "HTC", type: "licensing"},
